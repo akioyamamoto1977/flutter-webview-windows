@@ -370,7 +370,7 @@ void Webview::RegisterEventHandlers() {
       Callback<ICoreWebView2ServerCertificateErrorDetectedEventHandler>(
           [this](ICoreWebView2* sender,
                  ICoreWebView2ServerCertificateErrorDetectedEventArgs* args) -> HRESULT {
-            MessageBox(NULL, L"ServerCertificateErrorDetected", L"DEBUG", MB_OK);
+            args->put_Action(COREWEBVIEW2_SERVER_CERTIFICATE_ERROR_ACTION_ALWAYS_ALLOW);
             return S_OK;
           })
           .Get(),
