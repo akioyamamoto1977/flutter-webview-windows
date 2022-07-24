@@ -186,8 +186,8 @@ void Webview::RegisterEventHandlers() {
   }
 
   // NAIS
-  ICoreWebView2_14* webview_13 = NULL;
-  webview_->QueryInterface(__uuidof(ICoreWebView2_13), (void **)&webview_13);
+  ICoreWebView2_14* webview_14 = NULL;
+  webview_->QueryInterface(__uuidof(ICoreWebView2_14), (void **)&webview_14);
 
   webview_->add_ContentLoading(
       Callback<ICoreWebView2ContentLoadingEventHandler>(
@@ -366,7 +366,7 @@ void Webview::RegisterEventHandlers() {
           .Get(),
       &event_registrations_.new_windows_requested_token_);
   // NAIS
-  /* webview_->add_ServerCertificateErrorDetected(
+  webview_14->add_ServerCertificateErrorDetected(
       Callback<ICoreWebView2ServerCertificateErrorDetectedEventHandler>(
           [this](ICoreWebView2* sender,
                  ICoreWebView2ServerCertificateErrorDetectedEventArgs* args) -> HRESULT {
@@ -374,8 +374,7 @@ void Webview::RegisterEventHandlers() {
           })
           .Get(),
       &event_registrations_.new_windows_requested_token_);
-   */
-  webview_13->add_ClientCertificateRequested(
+  webview_14->add_ClientCertificateRequested(
       Callback<ICoreWebView2ClientCertificateRequestedEventHandler>(
           [this](ICoreWebView2* sender,
                  ICoreWebView2ClientCertificateRequestedEventArgs* args) {
