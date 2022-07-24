@@ -185,6 +185,10 @@ void Webview::RegisterEventHandlers() {
     return;
   }
 
+  // NAIS
+  ICoreWebView2_13* webview_13 = NULL;
+  webview_->QueryInterface(__uuidof(ICoreWebView2_13), (void **)&webview_13);
+
   webview_->add_ContentLoading(
       Callback<ICoreWebView2ContentLoadingEventHandler>(
           [this](ICoreWebView2* sender, IUnknown* args) -> HRESULT {
@@ -361,10 +365,44 @@ void Webview::RegisterEventHandlers() {
           })
           .Get(),
       &event_registrations_.new_windows_requested_token_);
-   // NAIS
-   webview_->add_ServerCertificateErrorDetected(Callback<ICoreWebView2ServerCertificateErrorDetectedEventHandler>(
+  // NAIS
+  /* webview_->add_ServerCertificateErrorDetected(
+      Callback<ICoreWebView2ServerCertificateErrorDetectedEventHandler>(
           [this](ICoreWebView2* sender,
                  ICoreWebView2ServerCertificateErrorDetectedEventArgs* args) -> HRESULT {
+            return S_OK;
+          })
+          .Get(),
+      &event_registrations_.new_windows_requested_token_);
+   */
+  webview_13->add_ClientCertificateRequested(
+      Callback<ICoreWebView2ClientCertificateRequestedEventHandler>(
+          [this](ICoreWebView2* sender,
+                 ICoreWebView2ClientCertificateRequestedEventArgs* args) {
+            wil::com_ptr<ICoreWebView2ClientCertificateCollection>
+                certificateCollection;
+            //CHECK_FAILURE(
+            //    args->get_MutuallyTrustedCertificates(&certificateCollection));
+
+            UINT certificateCollectionCount = 0;
+            //CHECK_FAILURE(
+            //    certificateCollection->get_Count(&certificateCollectionCount));
+            wil::com_ptr<ICoreWebView2ClientCertificate> certificate = nullptr;
+
+            if (certificateCollectionCount > 0) {
+              // There is no significance to the order, picking a certificate
+              // arbitrarily.
+              //CHECK_FAILURE(certificateCollection->GetValueAtIndex(
+                  //certificateCollectionCount - 1, &certificate));
+              // Continue with the selected certificate to respond to the
+              // server.
+              // CHECK_FAILURE(args->put_SelectedCertificate(certificate.get()));
+              // CHECK_FAILURE(args->put_Handled(TRUE));
+            } else {
+              // Continue without a certificate to respond to the server if
+              // certificate collection is empty.
+              //CHECK_FAILURE(args->put_Handled(TRUE));
+            }
             return S_OK;
           })
           .Get(),
