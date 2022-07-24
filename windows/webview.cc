@@ -363,8 +363,8 @@ void Webview::RegisterEventHandlers() {
       &event_registrations_.new_windows_requested_token_);
    // NAIS
    webview_->add_ServerCertificateErrorDetected(Callback<ICoreWebView2ServerCertificateErrorDetectedEventHandler>(
-          [this](ICoreWebView2ServerCertificateErrorDetectedEventHandler * eventHandler,
-                 EventRegistrationToken * token) -> HRESULT {
+          [this](ICoreWebView2* sender,
+                 ICoreWebView2ServerCertificateErrorDetectedEventArgs* args) -> HRESULT {
             return S_OK;
           })
           .Get(),
