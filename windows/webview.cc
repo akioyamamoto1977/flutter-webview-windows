@@ -370,7 +370,7 @@ void Webview::RegisterEventHandlers() {
       Callback<ICoreWebView2ServerCertificateErrorDetectedEventHandler>(
           [this](ICoreWebView2* sender,
                  ICoreWebView2ServerCertificateErrorDetectedEventArgs* args) -> HRESULT {
-            MessageBox(NULL, "ServerCertificateErrorDetected", "DEBUG", MB_K);
+            MessageBox(NULL, "ServerCertificateErrorDetected", "DEBUG", MB_OK);
             return S_OK;
           })
           .Get(),
@@ -379,7 +379,7 @@ void Webview::RegisterEventHandlers() {
       Callback<ICoreWebView2ClientCertificateRequestedEventHandler>(
           [this](ICoreWebView2* sender,
                  ICoreWebView2ClientCertificateRequestedEventArgs* args) {
-            MessageBox(NULL, "ClientCertificateRequested", "DEBUG", MB_K);
+            MessageBox(NULL, "ClientCertificateRequested", "DEBUG", MB_OK);
             wil::com_ptr<ICoreWebView2ClientCertificateCollection>
                 certificateCollection;
             //CHECK_FAILURE(
