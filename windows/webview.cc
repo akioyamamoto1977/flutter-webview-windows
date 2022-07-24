@@ -186,7 +186,7 @@ void Webview::RegisterEventHandlers() {
   }
 
   // NAIS
-  ICoreWebView2_15* webview_13 = NULL;
+  ICoreWebView2_14* webview_13 = NULL;
   webview_->QueryInterface(__uuidof(ICoreWebView2_13), (void **)&webview_13);
 
   webview_->add_ContentLoading(
