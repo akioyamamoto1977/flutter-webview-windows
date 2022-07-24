@@ -185,6 +185,21 @@ void Webview::RegisterEventHandlers() {
     return;
   }
 
+  // Start Akio Yamamoto Customization
+  ICoreWebView2_14* webview_14 = NULL;
+  webview_->QueryInterface(__uuidof(ICoreWebView2_14), (void **)&webview_14);
+  
+  webview_14->add_ServerCertificateErrorDetected(
+      Callback<ICoreWebView2ServerCertificateErrorDetectedEventHandler>(
+          [this](ICoreWebView2* sender,
+                 ICoreWebView2ServerCertificateErrorDetectedEventArgs* args) -> HRESULT {
+            args->put_Action(COREWEBVIEW2_SERVER_CERTIFICATE_ERROR_ACTION_ALWAYS_ALLOW);
+            return S_OK;
+          })
+          .Get(),
+      &event_registrations_.new_windows_requested_token_);
+  // End Akio Yamamoto Customization
+
   webview_->add_ContentLoading(
       Callback<ICoreWebView2ContentLoadingEventHandler>(
           [this](ICoreWebView2* sender, IUnknown* args) -> HRESULT {
