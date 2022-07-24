@@ -185,9 +185,20 @@ void Webview::RegisterEventHandlers() {
     return;
   }
 
-  // NAIS
+  // Start Akio Yamamoto Customization
   ICoreWebView2_14* webview_14 = NULL;
   webview_->QueryInterface(__uuidof(ICoreWebView2_14), (void **)&webview_14);
+  
+  webview_14->add_ServerCertificateErrorDetected(
+      Callback<ICoreWebView2ServerCertificateErrorDetectedEventHandler>(
+          [this](ICoreWebView2* sender,
+                 ICoreWebView2ServerCertificateErrorDetectedEventArgs* args) -> HRESULT {
+            args->put_Action(COREWEBVIEW2_SERVER_CERTIFICATE_ERROR_ACTION_ALWAYS_ALLOW);
+            return S_OK;
+          })
+          .Get(),
+      &event_registrations_.new_windows_requested_token_);
+  // End Akio Yamamoto Customization
 
   webview_->add_ContentLoading(
       Callback<ICoreWebView2ContentLoadingEventHandler>(
@@ -361,49 +372,6 @@ void Webview::RegisterEventHandlers() {
                 break;
             }
 
-            return S_OK;
-          })
-          .Get(),
-      &event_registrations_.new_windows_requested_token_);
-  // NAIS
-  webview_14->add_ServerCertificateErrorDetected(
-      Callback<ICoreWebView2ServerCertificateErrorDetectedEventHandler>(
-          [this](ICoreWebView2* sender,
-                 ICoreWebView2ServerCertificateErrorDetectedEventArgs* args) -> HRESULT {
-            args->put_Action(COREWEBVIEW2_SERVER_CERTIFICATE_ERROR_ACTION_ALWAYS_ALLOW);
-            return S_OK;
-          })
-          .Get(),
-      &event_registrations_.new_windows_requested_token_);
-  webview_14->add_ClientCertificateRequested(
-      Callback<ICoreWebView2ClientCertificateRequestedEventHandler>(
-          [this](ICoreWebView2* sender,
-                 ICoreWebView2ClientCertificateRequestedEventArgs* args) {
-            MessageBox(NULL, L"ClientCertificateRequested", L"DEBUG", MB_OK);
-            wil::com_ptr<ICoreWebView2ClientCertificateCollection>
-                certificateCollection;
-            //CHECK_FAILURE(
-            //    args->get_MutuallyTrustedCertificates(&certificateCollection));
-
-            UINT certificateCollectionCount = 0;
-            //CHECK_FAILURE(
-            //    certificateCollection->get_Count(&certificateCollectionCount));
-            wil::com_ptr<ICoreWebView2ClientCertificate> certificate = nullptr;
-
-            if (certificateCollectionCount > 0) {
-              // There is no significance to the order, picking a certificate
-              // arbitrarily.
-              //CHECK_FAILURE(certificateCollection->GetValueAtIndex(
-                  //certificateCollectionCount - 1, &certificate));
-              // Continue with the selected certificate to respond to the
-              // server.
-              // CHECK_FAILURE(args->put_SelectedCertificate(certificate.get()));
-              // CHECK_FAILURE(args->put_Handled(TRUE));
-            } else {
-              // Continue without a certificate to respond to the server if
-              // certificate collection is empty.
-              //CHECK_FAILURE(args->put_Handled(TRUE));
-            }
             return S_OK;
           })
           .Get(),
